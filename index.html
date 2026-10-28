@@ -174,15 +174,26 @@ function loop(){cx.clearRect(0,0,W,H);P=P.filter(p=>p.l>0&&p.y<H+30);
  requestAnimationFrame(loop)}loop();
 
 /* happy birthday tune (WebAudio) */
-let ac,muted=false,gain;
-const N={C:261.6,D:293.7,E:329.6,F:349.2,G:392,A:440,B:466.2,C2:523.3};
-const song=[['C',.5],['C',.25],['D',1],['C',1],['F',1],['E',2],['C',.5],['C',.25],['D',1],['C',1],['G',1],['F',2],
- ['C',.5],['C',.25],['C2',1],['A',1],['F',1],['E',1],['D',1.5],['B',.5],['B',.25],['A',1],['F',1],['G',1],['F',2.5]];
-function play(){try{ac=new (window.AudioContext||window.webkitAudioContext)();gain=ac.createGain();gain.gain.value=.18;gain.connect(ac.destination);
- let t=ac.currentTime+.2;for(const [n,d] of song){const o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.value=N[n];
- g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(1,t+.03);g.gain.exponentialRampToValueAtTime(.001,t+d*.42);o.connect(g);g.connect(gain);o.start(t);o.stop(t+d*.45);t+=d*.42}}catch(e){}}
-const mb=document.getElementById('mute');
-mb.onclick=()=>{muted=!muted;if(gain)gain.gain.value=muted?0:.18;mb.textContent=muted?'🔇':'🔊'};
+let muted = false;
+
+const music = new Audio('Rathamaarey-MassTamilan.dev.mp3');
+music.loop = true;
+music.volume = 0.6;
+music.preload = 'auto';
+
+function play() {
+    music.play().catch(error => {
+        console.log('Music playback failed:', error);
+    });
+}
+
+const mb = document.getElementById('mute');
+
+mb.onclick = () => {
+    muted = !muted;
+    music.muted = muted;
+    mb.textContent = muted ? '🔇' : '🔊';
+};
 
 /* open the gift */
 document.getElementById('gift').onclick=()=>{
